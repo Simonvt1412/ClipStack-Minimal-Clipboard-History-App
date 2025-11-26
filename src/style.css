@@ -19,10 +19,11 @@ body {
 header {
   padding: 12px;
   border-bottom: 1px solid #374151;
+  background: linear-gradient(90deg, #1f2937, #4b5563);
 }
 
 header h1 {
-  font-size: 16px;
+  font-size: 18px;
   margin-bottom: 8px;
 }
 
