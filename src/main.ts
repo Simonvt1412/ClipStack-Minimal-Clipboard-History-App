@@ -1,6 +1,20 @@
 import { app, BrowserWindow, globalShortcut, clipboard, ipcMain, Tray, Menu } from 'electron';
 import path from 'path';
 import { Database } from './database';
+import { autoUpdater } from 'electron-updater';
+
+// Auto-updater event logging
+autoUpdater.on('update-available', () => {
+  console.log('Update available – downloading...');
+});
+
+autoUpdater.on('update-downloaded', () => {
+  console.log('Update downloaded – will be installed on restart.');
+});
+
+autoUpdater.on('error', (err) => {
+  console.error('Auto-updater error:', err);
+});
 
 let mainWindow: BrowserWindow | null = null;
 let db: Database;
@@ -59,6 +73,9 @@ function stopClipboardPolling() {
 
 app.whenReady().then(() => {
   db = new Database(path.join(app.getPath('userData'), 'clipstack.db'));
+    // Auto-update: check GitHub Releases for updates
+  autoUpdater.autoDownload = true;
+  autoUpdater.checkForUpdatesAndNotify();
 
   createWindow();
   startClipboardPolling();

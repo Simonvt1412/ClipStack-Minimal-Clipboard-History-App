@@ -1,6 +1,6 @@
 # ClipStack
 
-Minimal Electron + TypeScript clipboard history app.
+Minimal Electron + TypeScript clipboard history app by Simon Van Tomme.
 
 ## Features
 
@@ -28,7 +28,6 @@ Minimal Electron + TypeScript clipboard history app.
 From the project root:
 
 ```powershell
-cd "clipstack"
 npm install
 npm run build
 npm start
@@ -60,12 +59,29 @@ Clipboard data is stored in a SQLite database file under Electron's `userData` d
 To build a distributable installer using `electron-builder`:
 
 ```powershell
-cd "clipstack"
 npm run build
 npm run dist
 ```
 
 After `npm run dist`, the installer `.exe` will be placed under the `dist/` folder. Run it to install ClipStack like a normal Windows app.
+
+## Auto-updates (via GitHub Releases)
+
+ClipStack can self-update when installed from a packaged build:
+
+1. Create a personal access token on GitHub with `repo` scope and store it safely (e.g. in a password manager).
+2. When you want to publish a new version:
+   - Bump the `version` field in `package.json`.
+   - In PowerShell, from the project root:
+
+     ```powershell
+     $env:GH_TOKEN = "YOUR_GITHUB_TOKEN_HERE"
+     npm run build
+     npm run dist
+     ```
+
+   - `electron-builder` will publish artifacts to the `ClipStack-Minimal-Clipboard-History-App` GitHub repository.
+3. Installed copies of ClipStack will check GitHub Releases for updates on startup and download/apply them automatically.
 
 ## Project Structure
 

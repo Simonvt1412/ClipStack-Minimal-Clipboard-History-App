@@ -61,6 +61,14 @@ main#list {
   padding: 8px 12px;
 }
 
+#footer {
+  padding: 6px 12px 10px;
+  border-top: 1px solid #374151;
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: center;
+}
+
 .entry {
   border-radius: 6px;
   border: 1px solid #374151;

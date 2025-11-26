@@ -1,35 +1,41 @@
 {
   "name": "clipstack",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "ClipStack – Minimal Clipboard History App",
   "main": "dist/main.js",
-"scripts": {
-  "start": "electron .",
-  "build": "tsc -p . && copyfiles -u 1 src/index.html src/style.css src/renderer/*.js dist",
-  "postinstall": "electron-builder install-app-deps",
-  "pack": "electron-builder --dir",
-  "dist": "electron-builder --win --x64"
-},
-  "build": {
-    "appId": "com.example.clipstack",
-    "productName": "ClipStack",
-    "files": [
-      "dist/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "directories": {
-      "buildResources": "build"
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    }
+  "scripts": {
+    "start": "electron .",
+    "build": "tsc -p . && copyfiles -u 1 src/index.html src/style.css src/renderer/*.js dist",
+    "postinstall": "electron-builder install-app-deps",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win --x64"
   },
+"build": {
+  "appId": "com.simonvantomme.clipstack",
+  "productName": "ClipStack",
+  "files": [
+    "dist/**/*",
+    "node_modules/**/*",
+    "package.json"
+  ],
+  "directories": {
+    "buildResources": "build"
+  },
+  "win": {
+    "target": ["nsis"]
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "Simonvt1412",
+      "repo": "ClipStack-Minimal-Clipboard-History-App"
+    }
+  ]
+},
   "dependencies": {
     "better-sqlite3": "^11.0.0",
-    "electron-store": "^9.0.0"
+    "electron-store": "^9.0.0",
+    "electron-updater": "^6.6.2"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
