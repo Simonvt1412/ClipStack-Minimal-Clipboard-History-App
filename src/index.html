@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ClipStack</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h1>ClipStack</h1>
+        <div class="top-bar">
+          <input
+            type="text"
+            id="search"
+            placeholder="Search clipboard history..."
+            autocomplete="off"
+          />
+          <button id="clear-all" title="Clear all entries">Clear</button>
+        </div>
+      </header>
+      <main id="list"></main>
+    </div>
+    <script src="renderer/app.js"></script>
+  </body>
+</html>
