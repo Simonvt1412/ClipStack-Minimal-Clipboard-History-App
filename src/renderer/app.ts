@@ -8,6 +8,7 @@ type ClipEntry = {
 const searchInput = document.getElementById('search') as HTMLInputElement;
 const listContainer = document.getElementById('list') as HTMLDivElement;
 const clearAllButton = document.getElementById('clear-all') as HTMLButtonElement;
+const versionSpan = document.getElementById('version') as HTMLSpanElement | null;
 
 async function refreshList() {
   const query = searchInput.value;
@@ -80,6 +81,9 @@ window.clipstack.onClipboardUpdated(() => {
 
 window.addEventListener('DOMContentLoaded', () => {
   refreshList();
+  if (versionSpan) {
+    versionSpan.textContent = `v${window.clipstack.getVersion()}`;
+  }
 });
 
 clearAllButton.addEventListener('click', async () => {

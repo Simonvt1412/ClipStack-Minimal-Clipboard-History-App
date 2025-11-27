@@ -73,6 +73,9 @@ function stopClipboardPolling() {
 
 app.whenReady().then(() => {
   db = new Database(path.join(app.getPath('userData'), 'clipstack.db'));
+  ipcMain.on('get-app-version', (event) => {
+    event.returnValue = app.getVersion();
+  });
     // Auto-update: check GitHub Releases for updates
   autoUpdater.autoDownload = true;
   autoUpdater.checkForUpdatesAndNotify();

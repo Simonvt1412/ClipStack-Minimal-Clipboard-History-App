@@ -15,7 +15,8 @@ contextBridge.exposeInMainWorld('clipstack', {
   clearAll: () => ipcRenderer.invoke('clear-all'),
   onClipboardUpdated: (callback: () => void) => {
     ipcRenderer.on('clipboard-updated', callback);
-  }
+  },
+  getVersion: () => process.versions.electron ? ipcRenderer.sendSync('get-app-version') : ''
 });
 
 declare global {
@@ -27,6 +28,7 @@ declare global {
       copyEntry: (content: string) => Promise<void>;
       clearAll: () => Promise<void>;
       onClipboardUpdated: (callback: () => void) => void;
+      getVersion: () => string;
     };
   }
 }
