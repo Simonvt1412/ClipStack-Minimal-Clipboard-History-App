@@ -1,6 +1,6 @@
 {
   "name": "clipstack",
-  "version": "0.1.5",
+  "version": "1.0.0",
   "description": "ClipStack – Minimal Clipboard History App",
   "main": "dist/main.js",
   "scripts": {

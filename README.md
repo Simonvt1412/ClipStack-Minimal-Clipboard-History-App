@@ -28,30 +28,71 @@ Minimal Electron + TypeScript clipboard history app by Simon Van Tomme.
 From the project root:
 
 ```powershell
+## ClipStack – Minimal Clipboard History for Windows
+
+ClipStack is a small Electron app that keeps a searchable history of your clipboard (text + images) with pinning, pause, and configurable history size.
+
+> **Status:** This project is feature-complete and not actively updated anymore.
+
+### Features
+
+- Text and image clipboard history
+- Pinned entries that are never auto-deleted
+- Pause / resume tracking with a single button
+- Configurable max history size with an optional "Uncapped" mode
+- Search bar to filter history
+- Clean dark UI tuned for a small always-on window
+
+### Getting Started
+
+Install dependencies:
+
+```powershell
 npm install
-npm run build
+```
+
+Run the app in development:
+
+```powershell
 npm start
 ```
 
-- `npm run build` compiles TypeScript and copies static assets into `dist/`.
-- `npm start` launches Electron using the compiled `dist` files.
+Build the compiled app (for packaging / release):
 
-## Usage
+```powershell
+npm run build
+```
 
-- Run `npm start` to launch ClipStack.
-- The window should open showing:
-  - App title
-  - Search bar
-  - Empty list ("No entries yet") if you haven't copied anything.
-- Copy text in any application (e.g., Notepad); within ~0.5 seconds it appears in the list.
-- For each entry you can:
-  - **Copy**: copies the entry back to the clipboard.
-  - **Pin / Unpin**: pins important entries to the top of the list.
-  - **Delete**: removes an entry from the database.
-- The **search bar** filters by content (substring match).
-- The **Clear** button clears all history.
-- Global hotkey **Ctrl + Shift + H** toggles the window visibility.
+Create a Windows installer (requires electron-builder):
 
+```powershell
+npm run dist
+```
+
+Built files are output to the `dist/` folder.
+
+### Getting the Installer
+
+- If you're cloning this repo:
+  - Build locally with `npm run build` and `npm run dist`, then run the generated `.exe` from the `dist/` folder.
+- If you're just a user:
+  - Download the latest `.exe` from the GitHub **Releases** page for this repo.
+
+Note: the `dist/` folder is ignored in git so large binaries are not stored in the repository; they are either built locally or attached to Releases.
+
+### Folder Structure
+
+- `src/main.ts` – Electron main process (window, tray, clipboard, DB wiring)
+- `src/preload.ts` – Safe bridge between main and renderer
+- `src/renderer/app.ts` – UI logic, rendering entries and handling user actions
+- `src/database.ts` – SQLite schema, history storage, and max history settings
+- `src/index.html` / `src/style.css` – UI layout and styling
+
+### Notes
+
+- The app stores history in a local SQLite database under your user data folder.
+- The max history cap (or uncapped mode) is persisted between runs.
+- This repo is ready to push to GitHub; `node_modules`, build artifacts, and local configs are ignored via `.gitignore`.
 Clipboard data is stored in a SQLite database file under Electron's `userData` directory (per user and app).
 
 ## Packaging for Windows

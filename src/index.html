@@ -8,15 +8,35 @@
   <body>
     <div id="app">
       <header>
-        <h1>ClipStack <span id="version"></span></h1>
+        <div class="title-row">
+          <div class="title-group">
+            <div class="app-icon"></div>
+            <div class="app-text">
+              <h1>ClipStack</h1>
+              <p class="subtitle">Minimal clipboard history for Windows</p>
+            </div>
+          </div>
+          <div class="controls-group">
+            <button id="toggle-pause" class="pill-button" title="Pause or resume tracking">Pause</button>
+          </div>
+        </div>
         <div class="top-bar">
+          <input
+            type="number"
+            id="max-history-input"
+            placeholder="Max history"
+            min="1"
+          />
+          <label class="checkbox-inline">
+            <input type="checkbox" id="uncapped-checkbox" /> Uncapped
+          </label>
           <input
             type="text"
             id="search"
             placeholder="Search clipboard history..."
             autocomplete="off"
           />
-          <button id="clear-all" title="Clear all entries">Clear</button>
+          <button id="clear-all" class="ghost-button" title="Clear all entries">Clear</button>
         </div>
       </header>
       <main id="list"></main>

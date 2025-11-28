@@ -1,27 +1,13 @@
-# Node
-node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-package-lock.json
-
-# Build output
-/dist
-/out
-/build
-
-# VS Code
-.vscode/
-.history/
-
-# Logs
+node_modules/
+dist/
 *.log
-logs/
-
-# OS files
-.DS_Store
 Thumbs.db
-
-# Environment
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.tmp
 .env
+.env.*
+package-lock.json
 .env.*

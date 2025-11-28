@@ -1,4 +1,4 @@
-import { app, BrowserWindow, globalShortcut, clipboard, ipcMain, Tray, Menu } from 'electron';
+import { app, BrowserWindow, globalShortcut, clipboard, ipcMain, Tray, Menu, nativeImage } from 'electron';
 import path from 'path';
 import { Database } from './database';
 import { autoUpdater } from 'electron-updater';
@@ -19,13 +19,15 @@ autoUpdater.on('error', (err) => {
 let mainWindow: BrowserWindow | null = null;
 let db: Database;
 let lastText: string = '';
+let lastImageHash: string | null = null;
 let pollInterval: NodeJS.Timeout | null = null;
 let tray: Tray | null = null;
+let isPaused = false;
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 400,
-    height: 600,
+    width: 480,
+    height: 720,
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -55,11 +57,31 @@ function startClipboardPolling() {
   if (pollInterval) return;
   pollInterval = setInterval(() => {
     const text = clipboard.readText().trim();
+    const image = clipboard.readImage();
+
     if (text && text !== lastText) {
-      console.log('New clipboard text detected:', text);  // <— add this line
       lastText = text;
-      db.insertEntry(text);
+      db.insertTextEntry(text);
       mainWindow?.webContents.send('clipboard-updated');
+      return;
+    }
+
+    if (!image.isEmpty()) {
+      const pngBuffer = image.toPNG();
+      const hash = pngBuffer.toString('base64');
+      if (hash !== lastImageHash) {
+        lastImageHash = hash;
+        const clipsDir = path.join(app.getPath('userData'), 'clips');
+        const fs = require('fs');
+        if (!fs.existsSync(clipsDir)) {
+          fs.mkdirSync(clipsDir, { recursive: true });
+        }
+        const filename = `clip-${Date.now()}.png`;
+        const filePath = path.join(clipsDir, filename);
+        fs.writeFileSync(filePath, pngBuffer);
+        db.insertImageEntry(filePath);
+        mainWindow?.webContents.send('clipboard-updated');
+      }
     }
   }, 500);
 }
@@ -141,8 +163,57 @@ app.whenReady().then(() => {
     clipboard.writeText(content);
   });
 
+  ipcMain.handle('copy-image-entry', async (_event, id: number) => {
+    const dbModule = require('./database') as typeof import('./database');
+    const rows = dbModule.Database.prototype.getEntries.call(db, '');
+    const entry = rows.find((e: any) => e.id === id);
+    if (entry && entry.type === 'image' && entry.imagePath) {
+      const fs = require('fs');
+      const data = fs.readFileSync(entry.imagePath);
+      const img = nativeImage.createFromBuffer(data);
+      clipboard.writeImage(img);
+    }
+  });
+
   ipcMain.handle('clear-all', () => {
     db.clearAll();
+  });
+
+  ipcMain.handle('toggle-pause-tracking', () => {
+    isPaused = !isPaused;
+    if (isPaused) {
+      // Stop polling entirely and reset last seen values
+      stopClipboardPolling();
+      lastText = '';
+      lastImageHash = null;
+    } else {
+      // Prime lastText/lastImageHash with current clipboard contents so
+      // the first clipboard state after resuming is treated as already seen.
+      const currentText = clipboard.readText().trim();
+      const currentImage = clipboard.readImage();
+      lastText = currentText || '';
+      lastImageHash = !currentImage.isEmpty()
+        ? currentImage.toPNG().toString('base64')
+        : null;
+
+      // Resume polling from scratch
+      startClipboardPolling();
+    }
+    if (mainWindow) {
+      mainWindow.webContents.send('pause-state-changed', isPaused);
+    }
+  });
+
+  ipcMain.handle('get-pause-state', () => {
+    return isPaused;
+  });
+
+  ipcMain.handle('set-max-history', (_event, limit: number | null) => {
+    db.setMaxHistory(limit);
+  });
+
+  ipcMain.handle('get-max-history', () => {
+    return db.getMaxHistory();
   });
 
   app.on('activate', () => {
